@@ -13,7 +13,8 @@ services:
     ports:
       - 13306:3306
     networks:
-      - mysql-replica-network
+      mysql-replica-network:
+        ipv4_address: 10.5.0.5
   mysql-slave:
     build:
       context: ./
@@ -26,8 +27,19 @@ services:
       MYSQL_ROOT_PASSWORD: 'password'
     ports:
       - 13307:3306
+    volumes: 
+      - ./slave/script:/script
     networks:
-      - mysql-replica-network
+      mysql-replica-network:
+        ipv4_address: 10.5.0.6
+    depends_on: 
+      - mysql-master
 networks:
   mysql-replica-network:
+networks: 
+  mysql-replica-network:
     driver: bridge
+    ipam: 
+      config: 
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
