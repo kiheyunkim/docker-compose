@@ -1,0 +1,33 @@
+version: "3"
+services: 
+  mysql-master:
+    build:
+      context: ./
+      dockerfile: master/Dockerfile
+    restart: always
+    environment: 
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - 13306:3306
+    networks:
+      - mysql-replica-network
+  mysql-slave:
+    build:
+      context: ./
+      dockerfile: slave/Dockerfile
+    restart: always
+    environment: 
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+    ports:
+      - 13307:3306
+    networks:
+      - mysql-replica-network
+networks:
+  mysql-replica-network:
+    driver: bridge
